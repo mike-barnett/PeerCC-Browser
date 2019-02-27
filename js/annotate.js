@@ -5,13 +5,11 @@
 //var localStream;
 //var inputCtx = $('#rtcRenderer').getContext('2d');
 
+let oldStream = null;
+
 "use strict";
 
 let isAnnotating = false;
-
-window.onload = function () {
-    initialize();
-};
 
 function initialize() {
     try {
@@ -36,6 +34,8 @@ function stopAnnotating() {
     let v = e.value;
     e.value = "Start Annotate";
     isAnnotating = false;
+    let videoPreview = document.getElementById("previewVideo");
+    videoPreview.srcObject = oldStream;
 }
 
 function startAnnotating() {
@@ -44,24 +44,17 @@ function startAnnotating() {
     e.value = "Stop Annotate";
     isAnnotating = true;
 
-    //navigator.getUserMedia({ video: true },
-    //    stream => {
-    //        alert('successfully got stream');
-    //        localStream = stream;
-    //        //$('.local video').attr('src', URL.createObjectURL(stream));
-    //        //drawToCanvas();
-    //    },
-    //    error => {
-    //        alert('error while accessing usermedia ' + error.toString());
-    //    }
-    //);
+    let videoPreview = document.getElementById("previewVideo");
+    oldStream = videoPreview.srcObject;
+    let outputCanvas = $('.output-canvas canvas')[0];
+    videoPreview.srcObject = outputCanvas.captureStream();
 
-    //drawToCanvas();
-
-
+    drawToCanvas();
 }
 
 function drawToCanvas() {
+
+    if (!isAnnotating) return;
 
     let localVideo = $('#rtcRenderer')[0];
     //let videoRenderer = document.getElementById("rtcRenderer");
@@ -89,10 +82,7 @@ function drawToCanvas() {
 
     outputCtx.putImageData(pixelData, 0, 0);
     requestAnimationFrame(drawToCanvas);
-
-    let videoPreview = document.getElementById("previewVideo");
-    videoPreview.srcObject = outputCanvas.captureStream();
-
 }
 
+initialize();
 
