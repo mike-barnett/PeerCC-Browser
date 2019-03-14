@@ -5,10 +5,9 @@
 //var localStream;
 //var inputCtx = $('#rtcRenderer').getContext('2d');
 
-let oldStream = null;
-
 "use strict";
 
+let oldStream = null;
 let isAnnotating = false;
 
 function initialize() {
@@ -85,4 +84,3 @@ function drawToCanvas() {
 }
 
 initialize();
-
